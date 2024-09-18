@@ -6,7 +6,7 @@ DIR="/sys/fs/bpf/parser"
 
 bpftool btf dump file /sys/kernel/btf/vmlinux format c > ./vmlinux.h
 
-clang -O2 -g -Wall -target bpf -c parser.bpf.c -o parser.o
+clang -O2 -g -Wall -target bpf -c parser.bpf.c -o parser.o "$@"
 
 sudo bpftool prog loadall parser.o ${DIR}
 

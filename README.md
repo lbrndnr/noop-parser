@@ -10,8 +10,8 @@ First, load the BPF programs as follows
 ```
 
 Next, spin up a simple HTTP service on port 8000:
-```python
-python3 -m http.server 8000
+```bash
+npx http-server -p 8000
 ```
 
 Finally, make a request to the service

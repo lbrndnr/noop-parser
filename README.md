@@ -13,6 +13,7 @@ Next, spin up a simple HTTP service on port 8000:
 ```bash
 npx http-server -p 8000
 ```
+Note that Python's [http.server](https://docs.python.org/3/library/http.server.html) does not seem to be compatible somehow. Thus, running `python3 -m http.server 8000` won't work.
 
 Finally, make a request to the service
 ```bash

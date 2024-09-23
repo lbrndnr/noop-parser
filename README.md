@@ -9,18 +9,20 @@ First, load the BPF programs as follows
 ./load.sh
 ```
 
-Next, spin up a simple HTTP service on port 8000:
+Next, open up a socket using netcat
 ```bash
-npx http-server -p 8000
+nc -l -p 8000
 ```
-Note that Python's [http.server](https://docs.python.org/3/library/http.server.html) does not seem to be compatible somehow. Thus, running `python3 -m http.server 8000` won't work.
 
-Finally, make a request to the service
+Finally, connect to it and send some data.
 ```bash
-curl -vvv http://127.0.0.1:8000
+nc 127.0.0.1 8000
+hello
+hi
 ```
 
 Alternatively, you can compile the BPF program with the `REDIRECT` flag. This causes the stream verdict to call `bpf_sk_redirect_hash`.
+That should avoid the kernel from deadlocking, but if you make multiple requests using netcat, you'll notice that not all of them make it through immediately.
 ```bash
 ./unload.sh
 ./load.sh -DREDIRECT

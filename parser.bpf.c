@@ -18,9 +18,15 @@ struct {
 
 SEC("sockops")
 int sock_ops(struct bpf_sock_ops *ops) {
-    bpf_printk("sockop: %d (%d -> %d)", ops->op, ops->local_port, bpf_ntohl(ops->remote_port));
+    __u32 lport = ops->local_port;
+    __u32 rport = bpf_ntohl(ops->remote_port);
 
-    if (ops->local_port == port) {
+    if (lport == port || rport == port) {
+        bpf_sock_ops_cb_flags_set(ops, ops->bpf_sock_ops_cb_flags | BPF_SOCK_OPS_STATE_CB_FLAG);
+        bpf_printk("sockop: %d (%d -> %d)", ops->op, lport, rport);
+    }
+
+    if (lport == port) {
         if (ops->op == BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB || ops->op == BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB) {
             if (bpf_sock_hash_update(ops, &sock_map, (void*)&key, BPF_NOEXIST) < 0) {
                 bpf_printk("ERROR: Adding socket failed.");
